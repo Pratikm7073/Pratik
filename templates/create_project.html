@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Project – PixelForge Nexus</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: #111;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #222;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: url('/static/images/xbox_icon_white.png') center/contain no-repeat;
+    }
+
+    .sitename {
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      color: #fff;
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      padding: 30px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    /* Flash Messages */
+    .flash-messages {
+      margin-bottom: 20px;
+    }
+    .flash-messages li {
+      list-style: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+    .flash-success {
+      background: rgba(40, 167, 69, 0.15);
+      color: #28a745;
+    }
+    .flash-danger {
+      background: rgba(220, 53, 69, 0.15);
+      color: #dc3545;
+    }
+
+    /* Form */
+    form label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      font-weight: 400;
+    }
+
+    input[type="text"], textarea, input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #555;
+      background: #000;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #2d81ff;
+    }
+
+    /* Button */
+    button {
+      background: #2d81ff;
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2266cc;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #2d81ff;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-section">
+    <div class="logo"></div>
+    <div class="sitename">PixelForge Nexus</div>
+  </div>
+  <nav>
+    <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+    <a href="{{ url_for('logout') }}">🚪 Logout</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Create New Project</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flash-messages">
+        {% for category, msg in messages %}
+          <li class="flash-{{ category }}">{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST">
+    <label for="name">Project Name</label>
+    <input type="text" name="name" id="name" required>
+
+    <label for="description">Description</label>
+    <textarea name="description" id="description" required></textarea>
+
+    <label for="deadline">Deadline</label>
+    <input type="date" name="deadline" id="deadline" required>
+
+    <button type="submit">Create Project</button>
+  </form>
+
+  <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+</main>
+
+</body>
+</html>

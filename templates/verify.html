@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Two-Factor Authentication – PixelForge Nexus</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #000;
+      color: #fff;
+    }
+
+    /* Left Panel */
+    .left-panel {
+      flex: 1;
+      background: url('https://source.unsplash.com/1080x1080/?cybersecurity,abstract') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .left-panel .logo {
+      width: 100px;
+      height: 100px;
+      background: url('/static/images/xbox_icon_white.png') center/contain no-repeat;
+      margin-bottom: 15px;
+    }
+
+    .left-panel .sitename {
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+
+    /* Right Panel */
+    .right-panel {
+      flex: 1;
+      background: #0a0a0a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .form-container {
+      max-width: 350px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .form-container h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+      font-weight: 500;
+    }
+
+    .form-container p {
+      font-size: 0.9rem;
+      color: #ccc;
+      margin-bottom: 1.5rem;
+    }
+
+    /* QR Code */
+    .qr-code {
+      margin-bottom: 1.5rem;
+    }
+    .qr-code img {
+      width: 180px;
+      height: 180px;
+      border: 6px solid #222;
+      border-radius: 10px;
+      background: #fff;
+      padding: 5px;
+    }
+
+    /* Input */
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 12px;
+      border: 1px solid #555;
+      border-radius: 6px;
+      background: #000;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      letter-spacing: 3px;
+      font-size: 1.2rem;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #2d81ff;
+    }
+
+    /* Buttons */
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .primary-btn {
+      background: #2d81ff;
+      color: #fff;
+      margin-bottom: 1.2rem;
+    }
+
+    .primary-btn:hover {
+      background: #1a5ed8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Panel -->
+  <div class="left-panel">
+    <div class="logo"></div>
+    <div class="sitename">PixelForge Nexus</div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="right-panel">
+    <div class="form-container">
+      <h1>Two-Factor Authentication</h1>
+      <p>Scan this QR code in Google Authenticator (only once):</p>
+
+      <div class="qr-code">
+        <img src="data:image/png;base64,{{ qrcode_data }}" alt="QR Code">
+      </div>
+
+      <p>Now enter the 6-digit code from your app:</p>
+
+      <form method="POST">
+        <input type="text" name="otp" placeholder="123456" required maxlength="6">
+        <button type="submit" class="primary-btn">Verify</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

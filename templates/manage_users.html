@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Users - PixelForge Nexus</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #111;
+      --muted: #9aa6b2;
+      --accent: #2d81ff;
+      --accent-2: #107C10;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    html,body { height:100%; margin:0; background:var(--bg); color:#fff; }
+    .container { max-width:1100px; margin:28px auto; padding:18px; }
+
+    h1 { font-size:1.6rem; margin-bottom:12px; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:18px; align-items:start; }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+      border:1px solid #202427;
+      padding:18px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.6);
+    }
+
+    label { display:block; margin-top:10px; color:var(--muted); font-size:0.9rem; }
+    input, select {
+      width:100%; padding:10px 12px; border-radius:8px; margin-top:6px;
+      background:#071018; color:#fff; border:1px solid #223;
+    }
+    .helper { font-size:0.85rem; color:var(--muted); margin-top:6px; }
+
+    .btn { padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+    .btn-primary { background:var(--accent); color:#fff; }
+    .btn-danger  { background:var(--danger); color:#fff; }
+    .btn-ghost   { background:transparent; color:var(--accent); border:1px solid #233; }
+
+    .small { font-size:0.85rem; padding:6px 8px; border-radius:6px; }
+
+    table { width:100%; border-collapse:collapse; margin-top:12px; font-size:0.95rem; }
+    th, td { padding:10px 8px; border-bottom:1px solid #141718; text-align:left; vertical-align:middle; }
+    th { background:#0f1416; color:var(--muted); font-weight:600; font-size:0.85rem; }
+    td.actions { white-space:nowrap; }
+
+    .row-top { display:flex; gap:12px; align-items:center; justify-content:space-between; }
+    .status-pill { padding:6px 10px; border-radius:999px; font-size:0.85rem; display:inline-block; }
+
+    /* responsive */
+    @media (max-width:900px) {
+      .grid { grid-template-columns: 1fr; }
+      .row-top { flex-direction:column; align-items:flex-start; gap:8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row-top">
+      <div>
+        <h1>Manage Users</h1>
+        <div style="color:var(--muted); margin-top:6px;">
+          Create users, change roles, approve new registrations, and remove accounts.
+        </div>
+      </div>
+      <div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-ghost">← Back to Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="margin-top:12px;">
+          {% for category, msg in messages %}
+            <div class="card" style="margin-bottom:8px; border-left:4px solid
+                 {% if category=='danger' %}{{ 'var(--danger)' }}
+                 {% elif category=='success' %}{{ 'var(--success)' }}
+                 {% else %}{{ 'var(--accent)' }}{% endif %};">
+              <strong style="color:inherit;">{{ msg }}</strong>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="grid" style="margin-top:18px;">
+      <!-- Create User -->
+      <div class="card">
+        <h2 style="margin:0 0 8px 0;">Create New User</h2>
+        <form method="POST" action="{{ url_for('create_user') }}">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required>
+
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required>
+          <div class="helper">Min 10 chars • 1 uppercase • 1 number • 1 special character</div>
+
+          <label for="confirm_password">Confirm Password</label>
+          <input id="confirm_password" name="confirm_password" type="password" required>
+
+          <label for="role">Role</label>
+          <select id="role" name="role" required>
+            <option value="developer">Developer</option>
+            <option value="project_lead">Project Lead</option>
+            <option value="admin">Admin</option>
+          </select>
+
+          <div style="margin-top:12px; display:flex; gap:10px;">
+            <button type="submit" class="btn btn-primary">Create User</button>
+            <button type="reset" class="btn" style="background:#222; color:#ddd;">Reset</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Pending Approvals -->
+      <div class="card">
+        <h2 style="margin:0 0 8px 0;">Pending Approvals</h2>
+        <div class="helper" style="margin-bottom:10px;">New registrations awaiting admin approval.</div>
+
+        {% if pending and pending|length > 0 %}
+          <table>
+            <thead>
+              <tr><th>Username</th><th>Requested Role</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              {% for p in pending %}
+              <tr>
+                <td>{{ p.username }}</td>
+                <td>{{ p.role or 'developer' }}</td>
+                <td class="actions">
+                  <form method="POST" action="{{ url_for('approve_user', user_id=p.id) }}" style="display:inline;">
+                    <button type="submit" class="small btn btn-primary" title="Approve">Approve</button>
+                  </form>
+
+                  <form method="POST" action="{{ url_for('reject_user', user_id=p.id) }}" style="display:inline;">
+                    <button type="submit" class="small btn btn-danger" onclick="return confirm('Reject and delete {{ p.username }}?');" title="Reject">Reject</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div style="color:var(--muted); padding:8px 0;">No pending users.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Existing Users -->
+    <div class="card" style="margin-top:18px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="margin:0;">Existing Users</h2>
+        <div class="helper" style="margin-left:12px;">Total: {{ users|length }}</div>
+      </div>
+
+      {% if users and users|length > 0 %}
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Change Role</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.username }}</td>
+              <td>
+                <span class="status-pill" style="background:#0c1620; border:1px solid #1f2933;">
+                  {{ user.role }}
+                </span>
+                {% if not user.approved %}
+                  <span class="status-pill" style="margin-left:8px; background:#3b3b3b; color:#fff;">Pending</span>
+                {% endif %}
+              </td>
+
+              <td>
+                <form method="POST" action="{{ url_for('manage_users') }}" style="display:inline;">
+                  <input type="hidden" name="user_id" value="{{ user.id }}">
+                  <select name="role" style="width:160px; display:inline-block;">
+                    <option value="admin"       {% if user.role=='admin'       %}selected{% endif %}>Admin</option>
+                    <option value="project_lead"{% if user.role=='project_lead'%}selected{% endif %}>Project Lead</option>
+                    <option value="developer"   {% if user.role=='developer'   %}selected{% endif %}>Developer</option>
+                  </select>
+                  <button type="submit" class="small btn" style="margin-left:8px; background:#17354a; color:#fff;">Update</button>
+                </form>
+              </td>
+
+              <td>
+                <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" style="display:inline;"
+                      onsubmit="return confirm('Are you sure you want to delete {{ user.username }}?');">
+                  <button type="submit" class="small btn btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div style="color:var(--muted); padding:12px 0;">No users found.</div>
+      {% endif %}
+    </div>
+
+  </div>
+</body>
+</html>

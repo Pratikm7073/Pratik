@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Document – PixelForge Nexus</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #111;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #222;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: url('/static/images/xbox_icon_white.png') center/contain no-repeat;
+    }
+
+    .sitename {
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      color: #fff;
+    }
+
+    main {
+      flex: 1;
+      padding: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background: #111;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+
+    select,
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #555;
+      border-radius: 6px;
+      background: #000;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    select:focus,
+    input[type="file"]:focus {
+      outline: none;
+      border-color: #2d81ff;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      background: #2d81ff;
+      color: #fff;
+    }
+
+    button:hover {
+      background: #1a5ecb;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #2d81ff;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-section">
+    <div class="logo"></div>
+    <div class="sitename">PixelForge Nexus</div>
+  </div>
+  <nav>
+    <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+    <a href="{{ url_for('logout') }}">🚪 Logout</a>
+  </nav>
+</header>
+
+<main>
+  <h2>Upload Document</h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    <select name="project_id" required>
+      {% for project in projects %}
+        <option value="{{ project.id }}">{{ project.name }}</option>
+      {% endfor %}
+    </select>
+
+    <input type="file" name="document" required>
+
+    <button type="submit">📤 Upload</button>
+  </form>
+
+  <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verify OTP – PixelForge Nexus</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #000;
+      color: #fff;
+    }
+
+    /* Left Panel */
+    .left-panel {
+      flex: 1;
+      background: url('https://source.unsplash.com/1080x1080/?gaming,abstract') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .left-panel .logo {
+      width: 100px;
+      height: 100px;
+      background: url('/static/images/xbox_icon_white.png') center/contain no-repeat;
+      margin-bottom: 15px;
+    }
+
+    .left-panel .sitename {
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+
+    /* Right Panel */
+    .right-panel {
+      flex: 1;
+      background: #0a0a0a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .form-container {
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .form-container h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-container p {
+      font-size: 0.95rem;
+      color: #bbb;
+      margin-bottom: 1.5rem;
+    }
+
+    /* QR Code box */
+    .qr-container {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      border: 1px solid #333;
+    }
+
+    .qr-container img {
+      max-width: 180px;
+      height: auto;
+    }
+
+    /* OTP Input */
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 12px;
+      border: 1px solid #555;
+      border-radius: 6px;
+      background: #000;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      letter-spacing: 3px;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #2d81ff;
+    }
+
+    /* Buttons */
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .primary-btn {
+      background: #555;
+      color: #fff;
+      margin-bottom: 1.2rem;
+    }
+
+    .primary-btn:hover {
+      background: #777;
+    }
+
+    /* Links */
+    .link {
+      display: block;
+      margin-top: 0.8rem;
+      color: #2d81ff;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Logo Section -->
+  <div class="left-panel">
+    <div class="logo"></div>
+    <div class="sitename">PixelForge Nexus</div>
+  </div>
+
+  <!-- Right Form Section -->
+  <div class="right-panel">
+    <div class="form-container">
+      <h1>Two-Factor Authentication</h1>
+      <p>Scan this QR code using Google Authenticator (only once):</p>
+
+      <div class="qr-container">
+        <img src="data:image/png;base64,{{ qrcode_data }}" alt="QR Code">
+      </div>
+
+      <p>Now enter the 6-digit code from your app:</p>
+      <form method="POST">
+        <input type="text" name="otp" maxlength="6" placeholder="••••••" required>
+        <button type="submit" class="primary-btn">Verify</button>
+      </form>
+
+      <a href="#" class="link">Trouble Scanning?</a>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Projects – PixelForge Nexus</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: #111;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #222;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: url('/static/images/xbox_icon_white.png') center/contain no-repeat;
+    }
+
+    .sitename {
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      color: #fff;
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      padding: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    /* Flash Messages */
+    .flash-messages {
+      margin-bottom: 20px;
+    }
+    .flash-messages li {
+      list-style: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+    .flash-success {
+      background: rgba(40, 167, 69, 0.15);
+      color: #28a745;
+    }
+    .flash-danger {
+      background: rgba(220, 53, 69, 0.15);
+      color: #dc3545;
+    }
+
+    /* Project Cards */
+    .project {
+      background: #111;
+      border: 1px solid #222;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .project h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .status-active {
+      color: #28a745;
+    }
+    .status-completed {
+      color: gray;
+      text-decoration: line-through;
+    }
+
+    .project p {
+      font-size: 0.95rem;
+      margin: 5px 0;
+      color: #ccc;
+    }
+
+    /* Actions */
+    .actions {
+      margin-top: 15px;
+    }
+    .actions a, .actions button {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-view {
+      background: #2d81ff;
+      color: #fff;
+    }
+    .btn-view:hover {
+      background: #2266cc;
+    }
+
+    .btn-complete {
+      background: #28a745;
+      color: #fff;
+      border: none;
+    }
+    .btn-complete:hover {
+      background: #218838;
+    }
+
+    .btn-delete {
+      background: #dc3545;
+      color: #fff;
+    }
+    .btn-delete:hover {
+      background: #c82333;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #2d81ff;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-section">
+    <div class="logo"></div>
+    <div class="sitename">PixelForge Nexus</div>
+  </div>
+  <nav>
+    <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+    <a href="{{ url_for('logout') }}">🚪 Logout</a>
+  </nav>
+</header>
+
+<main>
+  <h1>All Projects</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flash-messages">
+        {% for category, msg in messages %}
+          <li class="flash-{{ category }}">{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  {% if projects %}
+    {% for project in projects %}
+      <div class="project">
+        <h2 class="{{ 'status-completed' if project.status == 'Completed' else '' }}">
+          {{ project.name }}
+        </h2>
+        <p><strong>Description:</strong> {{ project.description }}</p>
+        <p>
+          <strong>Deadline:</strong> {{ project.deadline.strftime('%Y-%m-%d') }}
+          &nbsp;|&nbsp;
+          <strong>Status:</strong>
+          <span class="{{ 'status-active' if project.status=='Active' else 'status-completed' }}">
+            {{ project.status }}
+          </span>
+        </p>
+
+        <div class="actions">
+          <a href="{{ url_for('view_documents', project_id=project.id) }}" class="btn-view">📂 View Documents</a>
+
+          {% if current_user.role == 'admin' and project.status == 'Active' %}
+            <form method="POST" action="{{ url_for('complete_project', project_id=project.id) }}" style="display:inline;">
+              <button type="submit" class="btn-complete">Mark as Completed</button>
+            </form>
+          {% endif %}
+
+          {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('delete_project', project_id=project.id) }}"
+               onclick="return confirm('Delete project {{ project.name }}?');"
+               class="btn-delete">❌ Delete Project</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No projects found.</p>
+  {% endif %}
+
+  <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+</main>
+
+</body>
+</html>

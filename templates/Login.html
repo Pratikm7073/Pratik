@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign in – PixelForge Nexus</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Arial, sans-serif; }
+    body { display: flex; height: 100vh; background-color: #000; color: #fff; }
+
+    /* Left Panel */
+    .left-panel {
+      flex: 1;
+      background: url('https://source.unsplash.com/1080x1080/?gaming,abstract') center/cover no-repeat;
+      display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 20px;
+    }
+    .left-panel .logo { width: 120px; height: 120px; background: url("{{ url_for('static', filename='images/pixelforge_nexus_logo.png') }}") center/contain no-repeat; margin-bottom: 15px; }
+    .left-panel .sitename { font-size: 1.4rem; font-weight: 600; letter-spacing: .3px; }
+
+    /* Right Panel */
+    .right-panel { flex: 1; background: #0a0a0a; display: flex; justify-content: center; align-items: center; padding: 40px; }
+    .form-container { max-width: 380px; width: 100%; }
+    .form-container h1 { font-size: 1.6rem; margin-bottom: 1rem; font-weight: 600; }
+    label { font-size: 0.9rem; display: block; margin-bottom: 0.4rem; color: #ddd; }
+
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 14px 12px; border: 1px solid #555; border-radius: 6px; background: #000; color: #fff; font-size: 1rem; margin-bottom: 1rem;
+    }
+    input:focus { outline: none; border-color: #2d81ff; box-shadow: 0 0 0 3px rgba(45,129,255,0.06); }
+
+    .primary-btn { width: 100%; padding: 14px; border-radius: 25px; border: none; cursor: pointer; font-weight: 600; background: #2d81ff; color:#fff; }
+    .primary-btn:hover { background:#2466d1; }
+
+    .link { display:block; margin-top: 12px; color:#8fb7ff; text-decoration:none; font-size:0.9rem; }
+    .flash { margin-bottom: 12px; padding: 10px; border-radius:6px; font-size:0.95rem; }
+    .flash-danger { background:#4f1b1b; color:#ffd6d6; }
+    .flash-warning { background:#4a3a1b; color:#fff3cc; }
+    .flash-success { background:#15381a; color:#d7ffd6; }
+  </style>
+</head>
+<body>
+  <div class="left-panel">
+    <div class="logo" aria-hidden="true"></div>
+    <div class="sitename">PixelForge Nexus</div>
+  </div>
+
+  <div class="right-panel">
+    <div class="form-container">
+      <h1>Sign in to PixelForge Nexus</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat, msg in messages %}
+            <div class="flash {% if cat=='danger' %}flash-danger{% elif cat=='warning' %}flash-warning{% else %}flash-success{% endif %}">
+              {{ msg }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('login') }}" autocomplete="on">
+        {# If using CSRFProtect/Flask-WTF uncomment the next line #}
+        {# {{ csrf_token() }} #}
+
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" class="primary-btn">Sign In</button>
+      </form>
+
+      <a href="#" class="link">About PixelForge Nexus Account</a>
+      <a href="#" class="link">Trouble Signing In?</a>
+
+      <button class="secondary-btn" onclick="window.location.href='{{ url_for('register') }}'">Create an Account</button>
+    </div>
+  </div>
+</body>
+</html>

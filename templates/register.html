@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register – PixelForge Nexus</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #000;
+      color: #fff;
+    }
+
+    /* Left Panel */
+    .left-panel {
+      flex: 1;
+      background: url('https://source.unsplash.com/1080x1080/?technology,abstract') center/cover no-repeat;
+      display: flex; justify-content: center; align-items: center;
+      flex-direction: column; padding: 20px;
+    }
+    .left-panel .logo {
+      width: 100px; height: 100px;
+      background: url("{{ url_for('static', filename='images/pixelforge_nexus_logo.png') }}") center/contain no-repeat;
+      margin-bottom: 15px;
+    }
+    .left-panel .sitename {
+      font-size: 1.5rem; font-weight: 500;
+      text-align: center;
+    }
+
+    /* Right Panel */
+    .right-panel {
+      flex: 1; background: #0a0a0a;
+      display: flex; justify-content: center; align-items: center;
+      padding: 40px;
+    }
+    .form-container {
+      max-width: 360px; width: 100%;
+    }
+    .form-container h1 {
+      font-size: 1.6rem; margin-bottom: 1.5rem; font-weight: 500; text-align: center;
+    }
+
+    /* Flash Messages */
+    .flash {
+      margin-bottom: 1rem; font-size: 0.9rem;
+    }
+    .flash.danger { color: #e74c3c; }
+    .flash.info   { color: #3498db; }
+    .flash.success{ color: #2ecc71; }
+
+    label {
+      display: block; margin-bottom: 0.4rem;
+      font-size: 0.9rem; font-weight: 400;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 12px;
+      border: 1px solid #555; border-radius: 6px;
+      background: #000; color: #fff;
+      margin-bottom: 1rem; font-size: 1rem;
+    }
+    input:focus {
+      outline: none; border-color: #2d81ff;
+    }
+
+    button {
+      width: 100%; padding: 14px;
+      font-size: 1rem; border-radius: 25px;
+      border: none; cursor: pointer; font-weight: 500;
+    }
+    .primary-btn {
+      background: #2d81ff; color: #fff; margin-bottom: 1rem;
+    }
+    .primary-btn:hover { background: #1f5fcc; }
+
+    .link {
+      display: block; text-align: center;
+      color: #2d81ff; text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Branding Side -->
+  <div class="left-panel">
+    <div class="logo"></div>
+    <div class="sitename">PixelForge Nexus</div>
+  </div>
+
+  <!-- Registration Form -->
+  <div class="right-panel">
+    <div class="form-container">
+      <h1>Create Your Account</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('register') }}">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <small class="flash info">Min 10 chars, 1 uppercase, 1 number & 1 special</small>
+
+        <label for="confirm_password">Confirm Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+
+        <button type="submit" class="primary-btn">Register</button>
+      </form>
+
+      <a href="{{ url_for('login') }}" class="link">Already have an account? Sign in</a>
+    </div>
+  </div>
+
+</body>
+</html>

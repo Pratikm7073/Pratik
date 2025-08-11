@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Assigned Projects – PixelForge Nexus</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Arial, sans-serif; }
+    body { display: flex; flex-direction: column; min-height: 100vh; background: #0a0a0a; color: #fff; }
+
+    /* Header */
+    header {
+      background: #111;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #222;
+    }
+    .logo-section { display: flex; align-items: center; gap: 10px; }
+    .logo { width: 40px; height: 40px; background: url("{{ url_for('static', filename='images/pixelforge_nexus_logo.png') }}") center/contain no-repeat; }
+    .sitename { font-size: 1.2rem; font-weight: 500; }
+    nav a { color: #ccc; text-decoration: none; font-size: 0.95rem; }
+    nav a:hover { color: #fff; }
+
+    /* Main Content */
+    main { flex: 1; padding: 30px; max-width: 900px; margin: auto; }
+    h1 { font-size: 1.6rem; margin-bottom: 20px; }
+    .message { color: #2d81ff; margin-bottom: 20px; }
+
+    .project-card {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+    }
+    .project-card h2 { margin-bottom: 10px; font-size: 1.4rem; }
+    .project-card p { margin-bottom: 8px; font-size: 1rem; }
+    .status { font-weight: 600; }
+    .status-active { color: #4caf50; }
+    .status-completed { color: #777; text-decoration: line-through; }
+
+    .actions { margin-top: 15px; }
+    .action-btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background: #2d81ff;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s;
+      font-size: 0.95rem;
+    }
+    .action-btn:hover { background: #1f5fcc; }
+
+    /* Footer */
+    footer {
+      background: #111;
+      padding: 15px;
+      text-align: center;
+      color: #777;
+      border-top: 2px solid #222;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-section">
+    <div class="logo"></div>
+    <div class="sitename">PixelForge Nexus</div>
+  </div>
+  <nav><a href="{{ url_for('dashboard') }}">← Dashboard</a></nav>
+</header>
+
+<main>
+  <h1>My Assigned Projects</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="message">
+        {% for msg in messages %}{{ msg }}<br>{% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% if projects %}
+    {% for project in projects %}
+      <div class="project-card">
+        <h2>{{ project.name }}</h2>
+        <p><strong>Description:</strong> {{ project.description }}</p>
+        <p><strong>Deadline:</strong> {{ project.deadline.strftime('%Y-%m-%d') }}</p>
+        <p>
+          <strong>Status:</strong>
+          <span class="status {% if project.status=='Active' %}status-active{% else %}status-completed{% endif %}">
+            {{ project.status }}
+          </span>
+        </p>
+        <div class="actions">
+          <a class="action-btn" href="{{ url_for('view_documents', project_id=project.id) }}">
+            📂 View Documents
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>You have no assigned projects yet.</p>
+  {% endif %}
+</main>
+
+<footer>
+  &copy; {{ now().year if now else '2025' }} PixelForge Nexus. All rights reserved.
+</footer>
+
+</body>
+</html>
