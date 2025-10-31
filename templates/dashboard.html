@@ -1,171 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Dashboard – PixelForge Nexus</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
+    :root{
+      --bg:#050505;
+      --card:#0f1113;
+      --muted:#9aa6b2;
+      --accent:#2d81ff;
+      --accent-2:#107C10;
+      --glass: rgba(255,255,255,0.03);
+      --radius:12px;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      color-scheme: dark;
     }
 
-    body {
-      background-color: #0a0a0a;
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      background: linear-gradient(180deg,#030304 0%, #050507 100%);
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;
     }
 
-    /* Header */
-    header {
-      background: #111;
-      padding: 15px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid #222;
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 34px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      gap:16px;
     }
 
-    .logo-section {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
 
     .logo {
-      width: 40px;
-      height: 40px;
-      background: url("{{ url_for('static', filename='images/pixelforge_nexus_logo.png') }}")
-                  center/contain no-repeat;
+      width:44px;
+      height:44px;
+      background: center/contain no-repeat url("{{ url_for('static', filename='images/pixelforge_nexus_logo.png') }}");
+      border-radius:8px;
+      background-color: rgba(255,255,255,0.02);
     }
 
-    .sitename {
-      font-size: 1.2rem;
-      font-weight: 500;
+    .sitename { font-weight:600; font-size:1.1rem; color:#fff; }
+
+    nav a { color:#cfd8e3; text-decoration:none; margin-left:18px; font-size:0.95rem; }
+    nav a:hover{ color:var(--accent) }
+
+    main.container {
+      width:100%;
+      max-width:1200px;
+      margin:28px auto;
+      padding:0 20px;
+      display:grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap:24px;
+      align-items:start;
     }
 
-    nav a {
-      color: #ccc;
-      text-decoration: none;
-      margin-left: 20px;
-      font-size: 0.95rem;
+    /* Left hero panel */
+    .hero {
+      background:var(--card);
+      border-radius: var(--radius);
+      overflow:hidden;
+      display:flex;
+      min-height:420px;
+      box-shadow: 0 10px 30px rgba(2,6,12,0.6);
+      border: 1px solid rgba(255,255,255,0.02);
     }
 
-    nav a:hover {
-      color: #fff;
+    .hero-left {
+      flex:1.25;
+      position:relative;
+      background: url("{{ url_for('static', filename='images/hero_left.jpg') }}") center/cover no-repeat;
+      min-height:420px;
+      display:flex;
+      align-items:center;
+      padding:34px;
     }
 
-    /* Main Content */
-    main {
-      flex: 1;
-      padding: 30px;
-      max-width: 900px;
-      margin: 0 auto;
+    .hero-overlay {
+      background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.05) 100%);
+      padding:28px;
+      border-radius:0;
+      width:100%;
     }
 
-    h1 {
-      font-size: 1.6rem;
-      margin-bottom: 10px;
+    .tag {
+      display:inline-block;
+      background:var(--accent-2);
+      color:#fff;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:0.8rem;
+      margin-bottom:14px;
     }
 
-    .role {
-      font-size: 0.95rem;
-      color: #aaa;
-      margin-bottom: 30px;
+    .hero-title {
+      font-size:2.2rem;
+      line-height:1.05;
+      margin:6px 0 14px;
+      font-weight:800;
+      letter-spacing:-0.02em;
     }
 
-    /* Action Buttons */
+    .hero-sub {
+      color: #d6dbe3;
+      max-width:520px;
+      font-size:0.98rem;
+      margin-bottom:22px;
+    }
+
+    .hero-ctas {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-top:12px;
+    }
+
+    .cta {
+      padding:12px 18px;
+      border-radius:10px;
+      font-weight:700;
+      text-decoration:none;
+      display:inline-block;
+      border:none;
+      cursor:pointer;
+    }
+
+    .cta-join {
+      background:var(--accent-2);
+      color:#fff;
+    }
+
+    .cta-secondary {
+      background:transparent;
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    /* artwork strip on right of hero */
+    .hero-strip {
+      width:220px;
+      background: linear-gradient(180deg,#000,#0a0a0a);
+      display:flex;
+      flex-direction:column;
+      gap:0;
+    }
+
+    .strip-img {
+      height:33.333%;
+      background-size:cover;
+      background-position:center;
+    }
+
+    .strip1 { background-image: url("{{ url_for('static', filename='images/hero_strip1.jpg') }}"); }
+    .strip2 { background-image: url("{{ url_for('static', filename='images/hero_strip2.jpg') }}"); }
+    .strip3 { background-image: url("{{ url_for('static', filename='images/hero_strip3.jpg') }}"); }
+
+    /* Right control panel with actions */
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
+      border-radius: var(--radius);
+      padding:22px;
+      min-height:420px;
+      box-shadow: 0 8px 24px rgba(2,6,12,0.6);
+      border:1px solid rgba(255,255,255,0.02);
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .panel h2 { margin:0; font-size:1.25rem; }
+    .panel .muted { color:var(--muted); font-size:0.95rem; }
+
     .actions {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:8px;
     }
 
     .action-btn {
-      background: #1a1a1a;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      color: #fff;
-      text-decoration: none;
-      border: 1px solid #333;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.95rem;
-      font-weight: 500;
+      background: #121416;
+      padding:14px;
+      border-radius:10px;
+      text-align:center;
+      color:#fff;
+      text-decoration:none;
+      border:1px solid rgba(255,255,255,0.03);
+      transition: 0.14s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-size:0.95rem;
+      font-weight:600;
     }
+    .action-btn:hover{ transform: translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,0.6); border-color:var(--accent); color:var(--accent); }
 
-    .action-btn:hover {
-      background: #2d81ff;
-      border-color: #2d81ff;
-    }
+    .full-width { grid-column: 1 / -1; }
 
-    /* Footer */
+    .small-note { color:var(--muted); font-size:0.9rem; margin-top:auto; }
+
     footer {
-      background: #111;
-      padding: 15px;
-      text-align: center;
-      font-size: 0.85rem;
-      color: #777;
-      border-top: 2px solid #222;
+      padding:18px 34px;
+      text-align:center;
+      color: #8f97a2;
+      font-size:0.85rem;
+      border-top:1px solid rgba(255,255,255,0.02);
+      margin-top:28px;
+    }
+
+    /* Responsive */
+    @media (max-width:1000px){
+      main.container { grid-template-columns: 1fr; padding:12px; }
+      .hero { flex-direction:column; }
+      .hero-strip { width:100%; display:flex; flex-direction:row; height:120px; }
+      .strip-img { flex:1; height:100% }
+      .actions { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo-section">
-    <div class="logo"></div>
-    <div class="sitename">PixelForge Nexus</div>
-  </div>
-  <nav>
-    <a href="{{ url_for('logout') }}">🚪 Logout</a>
-  </nav>
-</header>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <div class="sitename">PixelForge Nexus</div>
+        <div style="font-size:0.85rem; color:var(--muted)">Secure role-based project platform</div>
+      </div>
+    </div>
 
-<main>
-  <h1>Welcome, {{ current_user.username }}!</h1>
-  <div class="role">Your role: <strong>{{ current_user.role }}</strong></div>
+    <nav>
+      <a href="{{ url_for('logout') }}">🚪 Logout</a>
+    </nav>
+  </header>
 
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul>
-        {% for message in messages %}
-          <li style="color: #2d81ff;">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
+  <main class="container">
+    <!-- Hero left -->
+    <section class="hero" aria-labelledby="welcome">
+      <div class="hero-left" role="region" aria-label="Showcase">
+        <div class="hero-overlay">
+          <div class="tag">PROJECTS</div>
+          <h1 id="welcome" class="hero-title">PixelForge Nexus — Project Hub</h1>
+          <div class="hero-sub">
+            Centralised, secure project management with role-based access and two-factor authentication. Upload and share documents, assign developers and keep projects tracked — safely.
+          </div>
 
-  <div class="actions">
-    {% if current_user.role == 'admin' %}
-      <a href="{{ url_for('manage_users') }}" class="action-btn">⚙️ Manage Users</a>
-      <a href="{{ url_for('create_project') }}" class="action-btn">➕ Create Project</a>
-      <a href="{{ url_for('view_projects') }}" class="action-btn">📋 View Projects</a>
-      <a href="{{ url_for('upload_document') }}" class="action-btn">📤 Upload Document</a>
-      <a href="{{ url_for('change_password') }}" class="action-btn">🔑 Change Password</a>
+          <div class="hero-ctas">
+            <button class="cta cta-join" onclick="location.href='{{ url_for('create_project') }}'">Create Project</button>
+            <a class="cta cta-secondary" href="{{ url_for('view_projects') }}">Browse Projects</a>
+          </div>
+        </div>
+      </div>
 
-    {% elif current_user.role == 'project_lead' %}
-      <a href="{{ url_for('assign_developer') }}" class="action-btn">👥 Assign Developers</a>
-      <a href="{{ url_for('view_projects') }}" class="action-btn">📋 View Assigned Projects</a>
-      <a href="{{ url_for('upload_document') }}" class="action-btn">📤 Upload Document</a>
-      <a href="{{ url_for('change_password') }}" class="action-btn">🔑 Change Password</a>
+      <div class="hero-strip" aria-hidden="true">
+        <div class="strip-img strip1"></div>
+        <div class="strip-img strip2"></div>
+        <div class="strip-img strip3"></div>
+      </div>
+    </section>
 
-    {% elif current_user.role == 'developer' %}
-      <a href="{{ url_for('my_projects') }}" class="action-btn">📋 My Projects</a>
-      <a href="{{ url_for('change_password') }}" class="action-btn">🔑 Change Password</a>
-    {% endif %}
-  </div>
-</main>
+    <!-- Right actions panel -->
+    <aside class="panel" role="complementary" aria-label="Quick actions">
+      <h2>Quick actions</h2>
+      <div class="muted">Shortcuts to the most common tasks for your role</div>
 
-<footer>
-  &copy; {{ now().year if now else '2025' }} PixelForge Nexus. All rights reserved.
-</footer>
+      <div class="actions">
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('manage_users') }}" class="action-btn">⚙️ Manage Users</a>
+          <a href="{{ url_for('create_project') }}" class="action-btn">➕ Create Project</a>
+          <a href="{{ url_for('view_projects') }}" class="action-btn">📋 View Projects</a>
+          <a href="{{ url_for('upload_document') }}" class="action-btn">📤 Upload Document</a>
+          <a href="{{ url_for('change_password') }}" class="action-btn full-width">🔑 Change Password</a>
+
+        {% elif current_user.role == 'project_lead' %}
+          <a href="{{ url_for('assign_developer') }}" class="action-btn">👥 Assign Developers</a>
+          <a href="{{ url_for('view_projects') }}" class="action-btn">📋 View Assigned Projects</a>
+          <a href="{{ url_for('upload_document') }}" class="action-btn">📤 Upload Document</a>
+          <a href="{{ url_for('change_password') }}" class="action-btn full-width">🔑 Change Password</a>
+
+        {% elif current_user.role == 'developer' %}
+          <a href="{{ url_for('my_projects') }}" class="action-btn">📋 My Projects</a>
+          <a href="{{ url_for('change_password') }}" class="action-btn full-width">🔑 Change Password</a>
+        {% endif %}
+      </div>
+
+      <div class="small-note">
+        Welcome back, <strong>{{ current_user.username }}</strong> — role: <em>{{ current_user.role }}</em>.
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    &copy; {{ now().year if now else '2025' }} PixelForge Nexus — Built with security-first design.
+  </footer>
 
 </body>
 </html>
